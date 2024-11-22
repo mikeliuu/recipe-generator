@@ -74,18 +74,22 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body
-				className={cn("antialiased", geistSans.variable, geistMono.variable)}
-			>
-				<div className="relative min-h-[calc(100vh-172px)] sm:min-h-[calc(100vh-120px)] max-w-screen-xl mx-auto">
-					{children}
-				</div>
+    <html lang="en">
+      <body
+        className={cn(
+          'antialiased bg-zinc-100 dark:bg-zinc-900',
+          geistSans.variable,
+          geistMono.variable,
+        )}
+      >
+        <div className="relative min-h-[calc(100vh-172px)] sm:min-h-[calc(100vh-120px)] max-w-screen-xl mx-auto">
+          {children}
+        </div>
 
-				<Footer />
+        <Footer />
 
-				<Toaster className="z-50" />
-			</body>
-		</html>
-	);
+        <Toaster className="z-50" />
+      </body>
+    </html>
+  );
 }

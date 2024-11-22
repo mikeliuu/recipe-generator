@@ -13,7 +13,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
+import { CURRENT_LMM_MODEL } from '@/constants/common';
 import { usePromptContext } from '@/providers/prompt-provider';
 import { generatePromptResponse } from '@/server/actions/prompt';
 import { Recipe } from '@/types/recipe';
@@ -32,7 +33,6 @@ const formSchema = z.object({
     )
     .optional()
     .default([]),
-  customPrompt: z.string().optional().default(''),
 });
 
 export function IngredientFrom() {
@@ -43,7 +43,6 @@ export function IngredientFrom() {
     defaultValues: {
       value: '',
       ingredients: [{ name: 'eggs' }],
-      customPrompt: '',
     },
   });
 
@@ -57,15 +56,10 @@ export function IngredientFrom() {
 
     const ingredients = data.ingredients.map(item => item.name);
 
-    setTimeout(() => {
-      console.log('delay');
-    }, 2000);
-
     const result = await generatePromptResponse(ingredients);
 
     if (!result.success) {
       toast.error(result.message);
-
       setPromptLoading(false);
 
       return;
@@ -107,12 +101,13 @@ export function IngredientFrom() {
                   <div className="flex flex-row items-center gap-4">
                     <Input
                       className="w-full"
-                      placeholder="Type your ingredient"
+                      placeholder="Type your ingredients"
                       disabled={isLoading}
                       {...field}
                     />
 
                     <Button
+                      className="rounded-full"
                       disabled={isLoading || isInputValueEmpty}
                       onClick={addToIngredientList}
                     >
@@ -147,39 +142,36 @@ export function IngredientFrom() {
           )}
         </div>
 
-        <FormField
-          control={form.control}
-          name="customPrompt"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Custom Prompt</FormLabel>
+        {isLoading ? (
+          <div className="flex flex-row justify-start items-start gap-2">
+            <Icon
+              className="motion-safe:animate-spin-slow text-teal-900"
+              name="Sparkles"
+            />
 
-              <FormControl>
-                <Textarea
-                  className="h-full max-h-[200px]"
-                  placeholder="Optional"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
+            <div className="w-full flex flex-col space-y-4">
+              <Skeleton className="w-[80%] h-6" />
+              <Skeleton className="w-[60%] h-6" />
+              <Skeleton className="w-[30%] h-6" />
+            </div>
+          </div>
+        ) : (
+          <div className="w-full grid grid-cols-1 gap-2">
+            <div className="w-full flex justify-center items-start">
+              <Button
+                className="w-full max-w-[350px] rounded-full bg-teal-900 hover:bg-teal-800 py-6"
+                type="submit"
+              >
+                <Icon name="Sparkles" />
+                Generate
+              </Button>
+            </div>
 
-              <FormDescription>
-                Enter an additional custom prompt for your recipe.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? (
-            'Generating'
-          ) : (
-            <>
-              <Icon name="Sparkles" /> Generate
-            </>
-          )}
-        </Button>
+            <p className="text-sm text-center text-gray-400">
+              Model: {CURRENT_LMM_MODEL}
+            </p>
+          </div>
+        )}
       </form>
     </Form>
   );

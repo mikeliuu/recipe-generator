@@ -8,8 +8,8 @@ export default function Home() {
       <PromptContextProvider>
         <IngredientFrom />
 
-        <div className='mt-12'>
-        <Recipes />
+        <div className="mt-12">
+          <Recipes />
         </div>
       </PromptContextProvider>
     </main>
