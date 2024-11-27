@@ -5,25 +5,30 @@ import { Badge, BadgeProps } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface ClosableBadgeProps extends BadgeProps {
+  disabled?: boolean;
   onClose: () => void;
 }
 
 export function ClosableBadge({
+  disabled,
   onClose,
   className,
   children,
   ...props
 }: ClosableBadgeProps) {
   return (
-    <div className="relative">
+    <div className="relative mt-2 mr-2">
       <div
-        className="cursor-pointer bg-gray-200 rounded-[50%] absolute -top-2 -right-2"
+        className={cn(
+          'cursor-pointer bg-gray-200 dark:bg-gray-600 rounded-[50%] absolute -top-2 -right-2',
+          { 'cursor-not-allowed pointer-events-none': disabled },
+        )}
         onClick={onClose}
       >
         <Icon name="X" className="w-6 h-6 p-0.5" />
       </div>
 
-      <Badge className={cn('hover:bg-unset', className)} {...props}>
+      <Badge active className={cn(className)} {...props}>
         {children}
       </Badge>
     </div>
