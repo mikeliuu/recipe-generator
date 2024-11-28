@@ -33,7 +33,6 @@ export enum Serve {
   Couple = '2',
   Family = '4',
   Group = '8',
-  Party = '8+',
 }
 
 export enum MealType {

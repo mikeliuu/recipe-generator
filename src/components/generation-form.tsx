@@ -69,23 +69,30 @@ export function GenerationFrom() {
     ingredients,
     ...inputs
   }: z.infer<typeof formSchema>) {
-    setPromptLoading(true);
+    try {
+      setPromptLoading(true);
 
-    const ingredientList = ingredients.map(item => item.name);
+      const ingredientList = ingredients.map(item => item.name);
 
-    const result = await generatePromptResponse({
-      ...inputs,
-      ingredients: ingredientList,
-    });
+      const result = await generatePromptResponse({
+        ...inputs,
+        ingredients: ingredientList,
+      });
 
-    if (!result.success) {
-      toast.error(result.message);
+      if (!result.success) {
+        toast.error(result.message);
+        setPromptLoading(false);
+
+        return;
+      }
+
+      setPromptResult(result.data);
+    } catch (err) {
+      console.error(err);
+
+      toast.error('Cannot generate response, please try again.');
       setPromptLoading(false);
-
-      return;
     }
-
-    setPromptResult(result.data);
   }
 
   const addToIngredientList = () => {
